@@ -1,0 +1,4 @@
+const element = /*#__PURE__*/React.createElement("div", {
+  title: "Outer Div"
+}, /*#__PURE__*/React.createElement("h1", null, "Hello World"), /*#__PURE__*/React.createElement("p", null, "This is a simple example of React"));
+ReactDOM.render(element, document.getElementById('content'));
