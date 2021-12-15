@@ -22,7 +22,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var project = [{
+var initialProjects = [{
   id: 1,
   status: 'new',
   owner: 'Jon',
@@ -37,6 +37,13 @@ var project = [{
   due: new Date('2018-08-08'),
   title: 'Standards and Style Guide'
 }];
+var sampleProjects = {
+  status: 'new',
+  owner: 'Jon',
+  effort: 5,
+  due: new Date('2018-08-08'),
+  title: 'New thing'
+};
 
 var ProjectTable = /*#__PURE__*/function (_React$Component) {
   _inherits(ProjectTable, _React$Component);
@@ -52,7 +59,7 @@ var ProjectTable = /*#__PURE__*/function (_React$Component) {
   _createClass(ProjectTable, [{
     key: "render",
     value: function render() {
-      var projectRows = project.map(function (project) {
+      var projectRows = this.props.projects.map(function (project) {
         return /*#__PURE__*/React.createElement(ProjectRow, {
           key: project.id,
           project: project
@@ -116,9 +123,15 @@ var ProjectAdd = /*#__PURE__*/function (_React$Component4) {
   var _super4 = _createSuper(ProjectAdd);
 
   function ProjectAdd() {
+    var _this;
+
     _classCallCheck(this, ProjectAdd);
 
-    return _super4.apply(this, arguments);
+    _this = _super4.call(this);
+    setTimeout(function () {
+      _this.props.createProject(sampleProjects);
+    }, 2000);
+    return _this;
   }
 
   _createClass(ProjectAdd, [{
@@ -137,15 +150,52 @@ var ProjectList = /*#__PURE__*/function (_React$Component5) {
   var _super5 = _createSuper(ProjectList);
 
   function ProjectList() {
+    var _this2;
+
     _classCallCheck(this, ProjectList);
 
-    return _super5.apply(this, arguments);
+    _this2 = _super5.call(this);
+    _this2.state = {
+      projects: []
+    };
+    return _this2;
   }
 
   _createClass(ProjectList, [{
+    key: "createProject",
+    value: function createProject(project) {
+      project.id = this.state.projects.length + 1;
+      project.created = new Date();
+      var newProjects = this.state.projects.slice();
+      newProjects.push(project);
+      this.setState({
+        projects: newProjects
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: "loadData",
+    value: function loadData() {
+      var _this3 = this;
+
+      setTimeout(function () {
+        _this3.setState({
+          projects: initialProjects
+        });
+      }, 500);
+    }
+  }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", null, "Projects"), /*#__PURE__*/React.createElement(ProjectFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectTable, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectAdd, null));
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", null, "Projects"), /*#__PURE__*/React.createElement(ProjectFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectTable, {
+        projects: this.state.projects
+      }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectAdd, {
+        createProject: this.createProject.bind(this)
+      }));
     }
   }]);
 
