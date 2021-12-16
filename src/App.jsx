@@ -64,13 +64,27 @@ class ProjectFilter extends React.Component{
 class ProjectAdd extends React.Component{
     constructor(){
         super();
-        setTimeout(()=>{
-            this.props.createProject(sampleProjects);
-        }, 2000);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
+
+    handleSubmit(e){
+        e.preventDefault();
+        const form = document.forms.projectAdd;
+        const project = {
+            owner: form.owner.value, title: form.title.value, status: 'new',
+        }
+        this.props.createProject(project);
+        form.owner.value = "";
+        form.title.value = "";
+    }
+
     render(){
         return(
-            <div>This is place holder for add</div>
+           <form name="projectAdd" onSubmit={this.handleSubmit}>
+                <input type="text" name="owner" placeholder="Owner"/>
+                <input type="text" name="title" placeholder="Title"/>
+                <button type="submit">Add</button>
+           </form>
         );
     }
 }
