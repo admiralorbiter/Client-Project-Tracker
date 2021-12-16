@@ -45,66 +45,32 @@ var sampleProjects = {
   title: 'New thing'
 };
 
-var ProjectTable = /*#__PURE__*/function (_React$Component) {
-  _inherits(ProjectTable, _React$Component);
+function ProjectTable(props) {
+  var projectRows = props.projects.map(function (project) {
+    return /*#__PURE__*/React.createElement(ProjectRow, {
+      key: project.id,
+      project: project
+    });
+  });
+  return /*#__PURE__*/React.createElement("table", {
+    className: "bordered-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Id"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Effort"), /*#__PURE__*/React.createElement("th", null, "Due Date"), /*#__PURE__*/React.createElement("th", null, "Title"))), /*#__PURE__*/React.createElement("tbody", null, projectRows));
+}
 
-  var _super = _createSuper(ProjectTable);
+function ProjectRow(props) {
+  var project = props.project;
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, project.id), /*#__PURE__*/React.createElement("td", null, project.status), /*#__PURE__*/React.createElement("td", null, project.owner), /*#__PURE__*/React.createElement("td", null, project.effort), /*#__PURE__*/React.createElement("td", null, project.due ? project.due.toDateString() : ''), /*#__PURE__*/React.createElement("td", null, project.title));
+}
 
-  function ProjectTable() {
-    _classCallCheck(this, ProjectTable);
+var ProjectFilter = /*#__PURE__*/function (_React$Component) {
+  _inherits(ProjectFilter, _React$Component);
 
-    return _super.apply(this, arguments);
-  }
-
-  _createClass(ProjectTable, [{
-    key: "render",
-    value: function render() {
-      var projectRows = this.props.projects.map(function (project) {
-        return /*#__PURE__*/React.createElement(ProjectRow, {
-          key: project.id,
-          project: project
-        });
-      });
-      return /*#__PURE__*/React.createElement("table", {
-        className: "bordered-table"
-      }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Id"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Effort"), /*#__PURE__*/React.createElement("th", null, "Due Date"), /*#__PURE__*/React.createElement("th", null, "Title"))), /*#__PURE__*/React.createElement("tbody", null, projectRows));
-    }
-  }]);
-
-  return ProjectTable;
-}(React.Component);
-
-var ProjectRow = /*#__PURE__*/function (_React$Component2) {
-  _inherits(ProjectRow, _React$Component2);
-
-  var _super2 = _createSuper(ProjectRow);
-
-  function ProjectRow() {
-    _classCallCheck(this, ProjectRow);
-
-    return _super2.apply(this, arguments);
-  }
-
-  _createClass(ProjectRow, [{
-    key: "render",
-    value: function render() {
-      var project = this.props.project;
-      return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, project.id), /*#__PURE__*/React.createElement("td", null, project.status), /*#__PURE__*/React.createElement("td", null, project.owner), /*#__PURE__*/React.createElement("td", null, project.effort), /*#__PURE__*/React.createElement("td", null, project.due ? project.due.toDateString() : ''), /*#__PURE__*/React.createElement("td", null, project.title));
-    }
-  }]);
-
-  return ProjectRow;
-}(React.Component);
-
-var ProjectFilter = /*#__PURE__*/function (_React$Component3) {
-  _inherits(ProjectFilter, _React$Component3);
-
-  var _super3 = _createSuper(ProjectFilter);
+  var _super = _createSuper(ProjectFilter);
 
   function ProjectFilter() {
     _classCallCheck(this, ProjectFilter);
 
-    return _super3.apply(this, arguments);
+    return _super.apply(this, arguments);
   }
 
   _createClass(ProjectFilter, [{
@@ -117,17 +83,17 @@ var ProjectFilter = /*#__PURE__*/function (_React$Component3) {
   return ProjectFilter;
 }(React.Component);
 
-var ProjectAdd = /*#__PURE__*/function (_React$Component4) {
-  _inherits(ProjectAdd, _React$Component4);
+var ProjectAdd = /*#__PURE__*/function (_React$Component2) {
+  _inherits(ProjectAdd, _React$Component2);
 
-  var _super4 = _createSuper(ProjectAdd);
+  var _super2 = _createSuper(ProjectAdd);
 
   function ProjectAdd() {
     var _this;
 
     _classCallCheck(this, ProjectAdd);
 
-    _this = _super4.call(this);
+    _this = _super2.call(this);
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     return _this;
   }
@@ -169,17 +135,17 @@ var ProjectAdd = /*#__PURE__*/function (_React$Component4) {
   return ProjectAdd;
 }(React.Component);
 
-var ProjectList = /*#__PURE__*/function (_React$Component5) {
-  _inherits(ProjectList, _React$Component5);
+var ProjectList = /*#__PURE__*/function (_React$Component3) {
+  _inherits(ProjectList, _React$Component3);
 
-  var _super5 = _createSuper(ProjectList);
+  var _super3 = _createSuper(ProjectList);
 
   function ProjectList() {
     var _this2;
 
     _classCallCheck(this, ProjectList);
 
-    _this2 = _super5.call(this);
+    _this2 = _super3.call(this);
     _this2.state = {
       projects: []
     };

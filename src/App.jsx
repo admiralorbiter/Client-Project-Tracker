@@ -14,43 +14,39 @@ const sampleProjects={
     title: 'New thing',
 }
 
-class ProjectTable extends React.Component {
-    render() {
-        const projectRows = this.props.projects.map(project=> <ProjectRow key={project.id} project={project}/>);
-        return (
-            <table className="bordered-table">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Status</th>
-                        <th>Owner</th>
-                        <th>Effort</th>
-                        <th>Due Date</th>
-                        <th>Title</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {projectRows}
-                </tbody>
-            </table>
-        );
-    }
+function ProjectTable(props) {
+    const projectRows = props.projects.map(project=> <ProjectRow key={project.id} project={project}/>);
+    return (
+        <table className="bordered-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Status</th>
+                    <th>Owner</th>
+                    <th>Effort</th>
+                    <th>Due Date</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {projectRows}
+            </tbody>
+        </table>
+    );
 }
 
-class ProjectRow extends React.Component{
-    render(){
-        const project = this.props.project;
-        return(
-            <tr>
-                <td>{project.id}</td>
-                <td>{project.status}</td>
-                <td>{project.owner}</td>
-                <td>{project.effort}</td>
-                <td>{project.due ? project.due.toDateString(): ''}</td>
-                <td>{project.title}</td>
-            </tr>
-        );
-    }
+function ProjectRow(props) {
+    const project = props.project;
+    return(
+        <tr>
+            <td>{project.id}</td>
+            <td>{project.status}</td>
+            <td>{project.owner}</td>
+            <td>{project.effort}</td>
+            <td>{project.due ? project.due.toDateString(): ''}</td>
+            <td>{project.title}</td>
+        </tr>
+    );
 }
 
 class ProjectFilter extends React.Component{
