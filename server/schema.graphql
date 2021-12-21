@@ -1,3 +1,14 @@
+scalar GraphQLDate
+
+input ProjectInputs {
+ title: String!
+ "Optional, if not supplied, will be set to 'New'"
+ status: String
+ owner: String
+ effort: Int
+ due: GraphQLDate
+}
+
 type Project {
     id: Int!
     status: String
@@ -13,4 +24,5 @@ type Query {
 }
 type Mutation {
     setAboutMessage(message: String!): String
+    projectAdd(project: ProjectInputs!): Project!
 }
