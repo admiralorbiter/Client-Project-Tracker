@@ -68,6 +68,7 @@ class ProjectAdd extends React.Component{
         const form = document.forms.projectAdd;
         const project = {
             owner: form.owner.value, title: form.title.value, status: 'new',
+            due: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
         }
         this.props.createProject(project);
         form.owner.value = "";
@@ -91,12 +92,22 @@ class ProjectList extends React.Component{
         this.state = {projects: []};
     }
 
-    createProject(project){
-        project.id = this.state.projects.length + 1;
-        project.created = new Date();
-        const newProjects = this.state.projects.slice();
-        newProjects.push(project);
-        this.setState({projects: newProjects});
+    async createProject(project){
+        const query = `mutation {
+             projectAdd(project:{
+                title: "${issue.title}",
+                 owner: "${issue.owner}",
+                due: "${issue.due.toISOString()}",
+             }) {
+                id
+            }
+        }`;
+        const response = await fetch('/graphql', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json'},
+             body: JSON.stringify({ query })
+        });
+        this.loadData();
     }
 
     componentDidMount() {
