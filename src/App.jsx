@@ -14,6 +14,30 @@ const sampleProjects={
     title: 'New thing',
 }
 
+async function graphQLFetch(query, variables={}){
+    try{
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, variables }),
+        });
+        const body = await response.text();
+        const result = JSON.parse(body, jsonDataReviver);
+
+        if(result.errors){
+            const error = result.errors[0];
+            if(error.extensions.code=='BAD_USER_INPUT'){
+                const details = error.extensions.exception.errors.join('\n ');
+                alert('$(error.message):\n $(details)');
+            }else{
+                alert('$(error.message.extensions.code):$(error.message)');
+            }
+        }
+        return result.data;
+    } catch(e){
+        alert('Error in sending data to server: ' + e.message);
+    }
+
 function ProjectTable(props) {
     const projectRows = props.projects.map(project=> <ProjectRow key={project.id} project={project}/>);
     return (
@@ -98,23 +122,29 @@ class ProjectList extends React.Component{
                 id
             }
         }`;
-        const response = await fetch('/graphql', {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json'},
-             body: JSON.stringify({ query, variables: {project} })
-        });
-        this.loadData();
+        const data = await graphQLFetch(query, { issue });
+        if (data) {
+            this.loadData();
+        }
     }
 
     componentDidMount() {
         this.loadData();
     }
 
-    loadData() {
-        setTimeout(() => {
-            this.setState({projects: initialProjects});
-        }, 500);
-    }
+    async loadData() {
+        const query = `query {
+          issueList {
+            id title status owner
+            created effort due
+          }
+        }`;
+
+        const data = await graphQLFetch(query);
+        if (data) {
+        this.setState({ issues: data.issueList });
+        }
+  }
     render(){
         return(
             <React.Fragment>
