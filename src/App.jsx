@@ -93,19 +93,15 @@ class ProjectList extends React.Component{
     }
 
     async createProject(project){
-        const query = `mutation {
-             projectAdd(project:{
-                title: "${issue.title}",
-                 owner: "${issue.owner}",
-                due: "${issue.due.toISOString()}",
-             }) {
+        const query = `mutation projectAdd($project: ProjectInputs!) {
+             projectAdd(project: $project){
                 id
             }
         }`;
         const response = await fetch('/graphql', {
              method: 'POST',
              headers: { 'Content-Type': 'application/json'},
-             body: JSON.stringify({ query })
+             body: JSON.stringify({ query, variables: {project} })
         });
         this.loadData();
     }

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { Kind } = require('graphql/language');
 const { GraphQLScalarType } = require('graphql');
 
@@ -13,12 +13,29 @@ const GraphQLDate = new GraphQLScalarType({
     return value.toISOString();
   },
   parseValue(value) {
-    return new Date(value);
+    const dateValue = new Date(value);
+    return isNaN(dateValue)?undefined:value;
   },
   parseLiteral(ast) {
-    return (ast.kind == Kind.STRING) ? new Date(ast.value) : undefined;
+    if(ast.kind == Kind.STRING){
+      const value = new Date(ast.value);
+      return isNaN(value)?undefined:value;
+    }
   },
 });
+
+function validateProject(_, {project}){
+  const errors = [];
+  if(project.title.length < 3){
+    errors.push("Title must be at least 3 characters long.");
+  }
+  if(project.status == undefined){
+    errors.push("Status is required.");
+  }
+  if(errors.length > 0){
+    throw new UserInputError("Invalid input", {errors});
+  }
+}
 
 const projectDB = [
   {
@@ -43,6 +60,7 @@ const resolvers = {
 };
 
 function projectAdd(_, { project }) {
+  validateProject(project);
   project.id = projectDB.length + 1;
   if (project.status == undefined) project.status = 'New';
   projectDB.push(project);
@@ -60,6 +78,10 @@ function projectList(){
 const server = new ApolloServer({
   typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
   resolvers,
+  formatError: error => {
+    console.log(error);
+    return error;
+  },
 });
 
 const app = express();
