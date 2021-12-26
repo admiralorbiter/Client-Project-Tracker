@@ -1,0 +1,23 @@
+{
+    "name": "project-tracker-ui",
+    "version": "1.0.0",
+    "description": "Project Tracker - UI",
+    "main": "index.js",
+    "scripts": {
+      "start": "nodemon -e js,graphql server.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/admiralorbiter/Client-Project-Tracker.git"
+    },
+    "author": "admiralorbiter@gmail.com",
+    "license": "ISC",
+    "dependencies": {
+        "apollo-server-express": "^2.25.3",
+      "express": "^4.17.1",
+    "graphql": "^15.8.0",
+    "mongodb": "^3.7.3",
+    "nodemon": "^2.0.15"
+    }
+  }
