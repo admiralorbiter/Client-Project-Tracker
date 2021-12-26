@@ -3,6 +3,11 @@ const express = require('express');
 const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { Kind } = require('graphql/language');
 const { GraphQLScalarType } = require('graphql');
+const {MongoClient} = require('mongodb');
+
+const url = 'mongodb://localhost/projectTracker';
+
+let db;
 
 let aboutMessage = "Issue Tracker API v1.0";
 
@@ -37,16 +42,13 @@ function validateProject(_, {project}){
   }
 }
 
-const projectDB = [
-  {
-      id: 1, status: 'new', owner: 'Jon', effort: 5, due: new Date('2018-08-08'),
-      title: 'Refactoring Code for Modularization',
-  },
-  {
-      id: 2, status: 'assigned', owner: 'Jon', effort: 18, due: new Date('2018-08-08'),
-      title: 'Standards and Style Guide',
-  },
-];
+async function getNextSequence(name) {
+  const result = await db.collection('counters').findOneAndUpdate(
+    { _id: name },
+    { $inc: { current: 1 } },
+    { returnOriginal: false },
+  );
+}
 
 const resolvers = {
   Query: {
@@ -59,21 +61,29 @@ const resolvers = {
   },
 };
 
-function projectAdd(_, { project }) {
+async function projectAdd(_, { project }) {
   validateProject(project);
-  project.id = projectDB.length + 1;
-  if (project.status == undefined) project.status = 'New';
-  projectDB.push(project);
-  return project;
+  project.id= await getNextSequence('projects');
+  const result = await db.collection('projects').insertOne(project);
+  const savedProject = await db.collection('projects').findOne({ _id: result.insertedId });
+  return savedProject;
  }
 
 function setAboutMessage(_, { message }) {
   return aboutMessage = message;
 }
 
-function projectList(){
-  return projectDB;
+async function projectList(){
+  const projects = await db.collection('projects').find({}).toArray();
+  return projects;
 }
+
+async function connectToDb() {
+  const client = new MongoClient(url, { useNewUrlParser: true });
+  await client.connect();
+  console.log('Connected to MongoDB at', url);
+  db = client.db();
+ }
 
 const server = new ApolloServer({
   typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
@@ -90,6 +100,13 @@ app.use(express.static('public'));
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen(3000, function () {
-  console.log('App started on port 3000');
-});
+(async function(){
+  try{
+    await connectToDb();
+    app.listen(3000, function () {
+      console.log('App started on port 3000');
+    });
+  }catch(err){
+    console.log('Error: ', err);
+  }
+})();

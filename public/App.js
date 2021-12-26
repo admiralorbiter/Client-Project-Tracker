@@ -2,10 +2,6 @@
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -26,6 +22,17 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
+
+function jsonDateReviver(key, value) {
+  if (dateRegex.test(value)) return new Date(value);
+  return value;
+}
+
 var initialProjects = [{
   id: 1,
   status: 'new',
@@ -35,7 +42,7 @@ var initialProjects = [{
   title: 'Refactoring Code for Modularization'
 }, {
   id: 2,
-  status: 'assigned',
+  status: 'InProgress',
   owner: 'Jon',
   effort: 18,
   due: new Date('2018-08-08'),
@@ -48,6 +55,74 @@ var sampleProjects = {
   due: new Date('2018-08-08'),
   title: 'New thing'
 };
+
+function graphQLFetch(_x) {
+  return _graphQLFetch.apply(this, arguments);
+}
+
+function _graphQLFetch() {
+  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(query) {
+    var variables,
+        response,
+        body,
+        result,
+        error,
+        details,
+        _args3 = arguments;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            variables = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : {};
+            _context3.prev = 1;
+            _context3.next = 4;
+            return fetch('/graphql', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                query: query,
+                variables: variables
+              })
+            });
+
+          case 4:
+            response = _context3.sent;
+            _context3.next = 7;
+            return response.text();
+
+          case 7:
+            body = _context3.sent;
+            result = JSON.parse(body, jsonDateReviver);
+
+            if (result.errors) {
+              error = result.errors[0];
+
+              if (error.extensions.code == 'BAD_USER_INPUT') {
+                details = error.extensions.exception.errors.join('\n ');
+                alert('$(error.message):\n $(details)');
+              } else {
+                alert('$(error.message.extensions.code):$(error.message)');
+              }
+            }
+
+            return _context3.abrupt("return", result.data);
+
+          case 13:
+            _context3.prev = 13;
+            _context3.t0 = _context3["catch"](1);
+            alert('Error in sending data to server: ' + _context3.t0.message);
+
+          case 16:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[1, 13]]);
+  }));
+  return _graphQLFetch.apply(this, arguments);
+}
 
 function ProjectTable(props) {
   var projectRows = props.projects.map(function (project) {
@@ -63,7 +138,7 @@ function ProjectTable(props) {
 
 function ProjectRow(props) {
   var project = props.project;
-  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, project.id), /*#__PURE__*/React.createElement("td", null, project.status), /*#__PURE__*/React.createElement("td", null, project.owner), /*#__PURE__*/React.createElement("td", null, project.effort), /*#__PURE__*/React.createElement("td", null, project.due ? project.due.toDateString() : ''), /*#__PURE__*/React.createElement("td", null, project.title));
+  return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, project.id), /*#__PURE__*/React.createElement("td", null, project.status), /*#__PURE__*/React.createElement("td", null, project.owner), /*#__PURE__*/React.createElement("td", null, project.effort), /*#__PURE__*/React.createElement("td", null, project.due ? project.due : ''), /*#__PURE__*/React.createElement("td", null, project.title));
 }
 
 var ProjectFilter = /*#__PURE__*/function (_React$Component) {
@@ -161,29 +236,23 @@ var ProjectList = /*#__PURE__*/function (_React$Component3) {
     key: "createProject",
     value: function () {
       var _createProject = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(project) {
-        var query, response;
+        var query, data;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 query = "mutation projectAdd($project: ProjectInputs!) {\n             projectAdd(project: $project){\n                id\n            }\n        }";
                 _context.next = 3;
-                return fetch('/graphql', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    query: query,
-                    variables: {
-                      project: project
-                    }
-                  })
+                return graphQLFetch(query, {
+                  project: project
                 });
 
               case 3:
-                response = _context.sent;
-                this.loadData();
+                data = _context.sent;
+
+                if (data) {
+                  this.loadData();
+                }
 
               case 5:
               case "end":
@@ -193,7 +262,7 @@ var ProjectList = /*#__PURE__*/function (_React$Component3) {
         }, _callee, this);
       }));
 
-      function createProject(_x) {
+      function createProject(_x2) {
         return _createProject.apply(this, arguments);
       }
 
@@ -206,15 +275,40 @@ var ProjectList = /*#__PURE__*/function (_React$Component3) {
     }
   }, {
     key: "loadData",
-    value: function loadData() {
-      var _this3 = this;
+    value: function () {
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var query, data;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                query = "query {\n          projectList {\n            id title status owner\n            effort due\n          }\n        }";
+                _context2.next = 3;
+                return graphQLFetch(query);
 
-      setTimeout(function () {
-        _this3.setState({
-          projects: initialProjects
-        });
-      }, 500);
-    }
+              case 3:
+                data = _context2.sent;
+
+                if (data) {
+                  this.setState({
+                    projects: data.projectList
+                  });
+                }
+
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function loadData() {
+        return _loadData.apply(this, arguments);
+      }
+
+      return loadData;
+    }()
   }, {
     key: "render",
     value: function render() {

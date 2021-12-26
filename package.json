@@ -24,6 +24,7 @@
     "doodle.css": "^0.0.2",
     "express": "^4.17.1",
     "graphql": "^15.8.0",
+    "mongodb": "^3.7.3",
     "nodemon": "^2.0.15"
   },
   "devDependencies": {

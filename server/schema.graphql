@@ -17,8 +17,9 @@ input ProjectInputs {
 }
 
 type Project {
+    _id: ID!
     id: Int!
-    status: StatusType!
+    status: String
     owner: String
     effort: Int
     due: String
