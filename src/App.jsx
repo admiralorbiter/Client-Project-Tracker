@@ -7,7 +7,7 @@ function jsonDateReviver(key, value) {
 
 const initialProjects = [
     {
-        id: 1, status: 'new', owner: 'Jon', effort: 5, due: new Date('2018-08-08'),
+        id: 1, status: 'New', owner: 'Jon', effort: 5, due: new Date('2018-08-08'),
         title: 'Refactoring Code for Modularization',
     },
     {
@@ -17,32 +17,32 @@ const initialProjects = [
 ];
 
 const sampleProjects={
-    status: 'new', owner: 'Jon', effort: 5, due: new Date('2018-08-08'),
+    status: 'New', owner: 'Jon', effort: 5, due: new Date('2018-08-08'),
     title: 'New thing',
 }
 
-async function graphQLFetch(query, variables={}){
-    try{
-        const response = await fetch('/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query, variables }),
-        });
-        const body = await response.text();
-        const result = JSON.parse(body, jsonDateReviver);
-
-        if(result.errors){
-            const error = result.errors[0];
-            if(error.extensions.code=='BAD_USER_INPUT'){
-                const details = error.extensions.exception.errors.join('\n ');
-                alert('$(error.message):\n $(details)');
-            }else{
-                alert('$(error.message.extensions.code):$(error.message)');
-            }
+async function graphQLFetch(query, variables = {}) {
+    try {
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ query, variables })
+      });
+      const body = await response.text();
+      const result = JSON.parse(body, jsonDateReviver);
+      
+      if (result.errors) {
+        const error = result.errors[0];
+        if (error.extensions.code == 'BAD_USER_INPUT') {
+          const details = error.extensions.exception.errors.join('\n ');
+          alert(`${error.message}:\n ${details}`);
+        } else {
+          alert(`${error.extensions.code}: ${error.message}`);
         }
-        return result.data;
-    } catch(e){
-        alert('Error in sending data to server: ' + e.message);
+      }
+      return result.data;
+    } catch (e) {
+      alert(`Error in sending data to server: ${e.message}`);
     }
 }
 
@@ -99,8 +99,7 @@ class ProjectAdd extends React.Component{
         e.preventDefault();
         const form = document.forms.projectAdd;
         const project = {
-            owner: form.owner.value, title: form.title.value, status: 'new',
-            due: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+            owner: form.owner.value, title: form.title.value, status: 'New',
         }
         this.props.createProject(project);
         form.owner.value = "";

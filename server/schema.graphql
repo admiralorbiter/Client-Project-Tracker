@@ -7,15 +7,6 @@ enum StatusType{
     Closed
 }
 
-input ProjectInputs {
- title: String!
- "Optional, if not supplied, will be set to 'New'"
- status: StatusType = New
- owner: String
- effort: Int
- due: GraphQLDate
-}
-
 type Project {
     _id: ID!
     id: Int!
@@ -24,6 +15,15 @@ type Project {
     effort: Int
     due: String
     title: String!
+}
+
+input ProjectInputs {
+ title: String!
+ "Optional, if not supplied, will be set to 'New'"
+ status: StatusType = New
+ owner: String
+ effort: Int
+ due: GraphQLDate
 }
 
 type Query {

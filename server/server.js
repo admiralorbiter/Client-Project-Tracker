@@ -34,12 +34,10 @@ function validateProject(_, {project}){
   if(project.title.length < 3){
     errors.push("Title must be at least 3 characters long.");
   }
-  if(project.status == undefined){
-    errors.push("Status is required.");
-  }
   if(errors.length > 0){
     throw new UserInputError("Invalid input", {errors});
   }
+  console.log("Valid Project");
 }
 
 async function getNextSequence(name) {
@@ -48,6 +46,7 @@ async function getNextSequence(name) {
     { $inc: { current: 1 } },
     { returnOriginal: false },
   );
+  return result.value.current;
 }
 
 const resolvers = {
@@ -62,7 +61,7 @@ const resolvers = {
 };
 
 async function projectAdd(_, { project }) {
-  validateProject(project);
+  // validateProject(project);
   project.id= await getNextSequence('projects');
   const result = await db.collection('projects').insertOne(project);
   const savedProject = await db.collection('projects').findOne({ _id: result.insertedId });
@@ -75,6 +74,7 @@ function setAboutMessage(_, { message }) {
 
 async function projectList(){
   const projects = await db.collection('projects').find({}).toArray();
+  console.log(projects);
   return projects;
 }
 

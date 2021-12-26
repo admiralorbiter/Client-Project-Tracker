@@ -35,7 +35,7 @@ function jsonDateReviver(key, value) {
 
 var initialProjects = [{
   id: 1,
-  status: 'new',
+  status: 'New',
   owner: 'Jon',
   effort: 5,
   due: new Date('2018-08-08'),
@@ -49,7 +49,7 @@ var initialProjects = [{
   title: 'Standards and Style Guide'
 }];
 var sampleProjects = {
-  status: 'new',
+  status: 'New',
   owner: 'Jon',
   effort: 5,
   due: new Date('2018-08-08'),
@@ -101,9 +101,9 @@ function _graphQLFetch() {
 
               if (error.extensions.code == 'BAD_USER_INPUT') {
                 details = error.extensions.exception.errors.join('\n ');
-                alert('$(error.message):\n $(details)');
+                alert("".concat(error.message, ":\n ").concat(details));
               } else {
-                alert('$(error.message.extensions.code):$(error.message)');
+                alert("".concat(error.extensions.code, ": ").concat(error.message));
               }
             }
 
@@ -112,7 +112,7 @@ function _graphQLFetch() {
           case 13:
             _context3.prev = 13;
             _context3.t0 = _context3["catch"](1);
-            alert('Error in sending data to server: ' + _context3.t0.message);
+            alert("Error in sending data to server: ".concat(_context3.t0.message));
 
           case 16:
           case "end":
@@ -185,8 +185,7 @@ var ProjectAdd = /*#__PURE__*/function (_React$Component2) {
       var project = {
         owner: form.owner.value,
         title: form.title.value,
-        status: 'new',
-        due: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
+        status: 'New'
       };
       this.props.createProject(project);
       form.owner.value = "";
