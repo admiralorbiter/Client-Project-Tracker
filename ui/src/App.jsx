@@ -118,6 +118,10 @@ class ProjectAdd extends React.Component{
     }
 }
 
+ProjectAdd.propTypes = {
+    createIssue: PropTypes.func.isRequired,
+  };
+
 class ProjectList extends React.Component{
     constructor(){
         super();

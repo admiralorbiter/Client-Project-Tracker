@@ -217,6 +217,10 @@ var ProjectAdd = /*#__PURE__*/function (_React$Component2) {
   return ProjectAdd;
 }(React.Component);
 
+ProjectAdd.propTypes = {
+  createIssue: PropTypes.func.isRequired
+};
+
 var ProjectList = /*#__PURE__*/function (_React$Component3) {
   _inherits(ProjectList, _React$Component3);
 
