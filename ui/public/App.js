@@ -99,7 +99,7 @@ function _graphQLFetch() {
             if (result.errors) {
               error = result.errors[0];
 
-              if (error.extensions.code == 'BAD_USER_INPUT') {
+              if (error.extensions.code === 'BAD_USER_INPUT') {
                 details = error.extensions.exception.errors.join('\n ');
                 alert("".concat(error.message, ":\n ").concat(details));
               } else {
@@ -113,8 +113,9 @@ function _graphQLFetch() {
             _context3.prev = 13;
             _context3.t0 = _context3["catch"](1);
             alert("Error in sending data to server: ".concat(_context3.t0.message));
+            return _context3.abrupt("return", null);
 
-          case 16:
+          case 17:
           case "end":
             return _context3.stop();
         }
@@ -124,8 +125,9 @@ function _graphQLFetch() {
   return _graphQLFetch.apply(this, arguments);
 }
 
-function ProjectTable(props) {
-  var projectRows = props.projects.map(function (project) {
+function ProjectTable(_ref) {
+  var projects = _ref.projects;
+  var projectRows = projects.map(function (project) {
     return /*#__PURE__*/React.createElement(ProjectRow, {
       key: project.id,
       project: project
@@ -136,8 +138,8 @@ function ProjectTable(props) {
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Id"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Owner"), /*#__PURE__*/React.createElement("th", null, "Effort"), /*#__PURE__*/React.createElement("th", null, "Due Date"), /*#__PURE__*/React.createElement("th", null, "Title"))), /*#__PURE__*/React.createElement("tbody", null, projectRows));
 }
 
-function ProjectRow(props) {
-  var project = props.project;
+function ProjectRow(_ref2) {
+  var project = _ref2.project;
   return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, project.id), /*#__PURE__*/React.createElement("td", null, project.status), /*#__PURE__*/React.createElement("td", null, project.owner), /*#__PURE__*/React.createElement("td", null, project.effort), /*#__PURE__*/React.createElement("td", null, project.due ? project.due : ''), /*#__PURE__*/React.createElement("td", null, project.title));
 }
 
@@ -187,7 +189,8 @@ var ProjectAdd = /*#__PURE__*/function (_React$Component2) {
         title: form.title.value,
         status: 'New'
       };
-      this.props.createProject(project);
+      var createProject = this.props.createProject;
+      createProject(project);
       form.owner.value = "";
       form.title.value = "";
     }
@@ -311,8 +314,9 @@ var ProjectList = /*#__PURE__*/function (_React$Component3) {
   }, {
     key: "render",
     value: function render() {
+      var projects = this.state.projects;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("h2", null, "Projects"), /*#__PURE__*/React.createElement(ProjectFilter, null), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectTable, {
-        projects: this.state.projects
+        projects: projects
       }), /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement(ProjectAdd, {
         createProject: this.createProject.bind(this)
       }));

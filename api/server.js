@@ -21,13 +21,14 @@ const GraphQLDate = new GraphQLScalarType({
   },
   parseValue(value) {
     const dateValue = new Date(value);
-    return isNaN(dateValue)?undefined:value;
+    return Number.isNaN(dateValue.getTime()) ? undefined : dateValue;
   },
   parseLiteral(ast) {
     if(ast.kind == Kind.STRING){
       const value = new Date(ast.value);
-      return isNaN(value)?undefined:value;
+      return Number.isNaN(value.getTime()) ? undefined : value;
     }
+    return undefined;
   },
 });
 
@@ -64,14 +65,17 @@ const resolvers = {
 
 async function projectAdd(_, { project }) {
   // validateProject(project);
-  project.id= await getNextSequence('projects');
-  const result = await db.collection('projects').insertOne(project);
+  const newProject = Object.assign({}, project);
+  newProject.created = new Date();
+  newProject.id = await getNextSequence('projects');
+  const result = await db.collection('projects').insertOne(newProject);
   const savedProject = await db.collection('projects').findOne({ _id: result.insertedId });
   return savedProject;
  }
 
 function setAboutMessage(_, { message }) {
-  return aboutMessage = message;
+  aboutMessage = message;
+  return aboutMessage;
 }
 
 async function projectList(){
@@ -90,7 +94,7 @@ async function connectToDb() {
 const server = new ApolloServer({
   typeDefs: fs.readFileSync('./schema.graphql', 'utf-8'),
   resolvers,
-  formatError: error => {
+  formatError: (error) => {
     console.log(error);
     return error;
   },
@@ -99,16 +103,17 @@ const server = new ApolloServer({
 const app = express();
 
 // app.use(express.static('public'));
+const enableCors = (process.env.ENABLE_CORS || 'true') == 'true';
+console.log('CORS setting:', enableCors);
+server.applyMiddleware({ app, path: '/graphql', cors: enableCors });
 
-server.applyMiddleware({ app, path: '/graphql' });
-
-(async function(){
+(async function start(){
   try{
     await connectToDb();
-    app.listen(port, function () {
+    app.listen(port,  ()=> {
       console.log(`Api Server started on port ${port}`);
     });
   }catch(err){
     console.log('Error: ', err);  
   }
-})();
+}());

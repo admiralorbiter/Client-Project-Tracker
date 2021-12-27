@@ -26,14 +26,14 @@ async function graphQLFetch(query, variables = {}) {
       const response = await fetch(window.ENV.UI_API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ query, variables })
+        body: JSON.stringify({ query, variables }),
       });
       const body = await response.text();
       const result = JSON.parse(body, jsonDateReviver);
       
       if (result.errors) {
         const error = result.errors[0];
-        if (error.extensions.code == 'BAD_USER_INPUT') {
+        if (error.extensions.code === 'BAD_USER_INPUT') {
           const details = error.extensions.exception.errors.join('\n ');
           alert(`${error.message}:\n ${details}`);
         } else {
@@ -43,11 +43,12 @@ async function graphQLFetch(query, variables = {}) {
       return result.data;
     } catch (e) {
       alert(`Error in sending data to server: ${e.message}`);
+      return null;
     }
 }
 
-function ProjectTable(props) {
-    const projectRows = props.projects.map(project=> <ProjectRow key={project.id} project={project}/>);
+function ProjectTable({projects}) {
+    const projectRows = projects.map(project=> <ProjectRow key={project.id} project={project}/>);
     return (
         <table className="bordered-table">
             <thead>
@@ -67,8 +68,7 @@ function ProjectTable(props) {
     );
 }
 
-function ProjectRow(props) {
-    const project = props.project;
+function ProjectRow({project}) {
     return(
         <tr>
             <td>{project.id}</td>
@@ -101,7 +101,8 @@ class ProjectAdd extends React.Component{
         const project = {
             owner: form.owner.value, title: form.title.value, status: 'New',
         }
-        this.props.createProject(project);
+        const{createProject} = this.props;
+        createProject(project)
         form.owner.value = "";
         form.title.value = "";
     }
@@ -153,12 +154,13 @@ class ProjectList extends React.Component{
         }
     }
     render(){
+        const{projects} = this.state;
         return(
             <React.Fragment>
                 <h2>Projects</h2>
                 <ProjectFilter/>
                 <hr />
-                <ProjectTable projects={this.state.projects}/>
+                <ProjectTable projects={projects}/>
                 <hr />
                 <ProjectAdd createProject={this.createProject.bind(this)}/>
             </React.Fragment>
